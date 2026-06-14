@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MyBirthday - Undangan Ulang Tahun</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Poppins:wght@300;400;600;700&display=swap');
+
+    :root{
+      --primary:#e255a1;
+      --secondary:#ff6b9d;
+      --tertiary:#ffa5c7;
+      --light:#fff;
+      --dark:#1a1a1a;
+      --accent:#f093fb;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    
+    body{
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#fce7f3 0%,#f3e8ff 50%,#e0e7ff 100%);
+      color:#1a1a1a;
+      min-height:100vh;
+      overflow-x:hidden;
+      position:relative;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      top:0;left:0;
+      width:100%;height:100%;
+      background:radial-gradient(circle at 20% 50%,rgba(224,85,161,0.1) 0%,transparent 50%),
+                  radial-gradient(circle at 80% 80%,rgba(240,147,251,0.1) 0%,transparent 50%);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .center{display:flex;align-items:center;justify-content:center}
+
+    .confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:100;}
+    .confetti span{position:absolute;width:10px;height:10px;background:var(--primary);opacity:0.7;animation:fall linear infinite;border-radius:50%;}
+
+    @keyframes fall{
+      0%{transform:translateY(-10%) rotate(0deg);opacity:1;}
+      100%{transform:translateY(110vh) rotate(720deg);opacity:0;}
+    }
+
+    @keyframes slideUp{
+      from{opacity:0;transform:translateY(40px);}
+      to{opacity:1;transform:translateY(0);}
+    }
+
+    @keyframes fadeIn{
+      from{opacity:0;}
+      to{opacity:1;}
+    }
+
+    @keyframes float{
+      0%,100%{transform:translateY(0px);}
+      50%{transform:translateY(-20px);}
+    }
+
+    @keyframes glow{
+      0%,100%{box-shadow:0 0 20px rgba(226,85,161,0.4),0 20px 50px rgba(226,85,161,0.15);}
+      50%{box-shadow:0 0 30px rgba(226,85,161,0.6),0 20px 60px rgba(226,85,161,0.25);}
+    }
+
+    .landing{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      position:relative;
+      overflow:hidden;
+      padding:20px;
+      z-index:1;
+    }
+
+    .landing::after{
+      content:"";
+      position:absolute;
+      top:-50%;left:-50%;
+      width:200%;height:200%;
+      background:radial-gradient(circle,rgba(224,85,161,0.05) 1px,transparent 1px);
+      background-size:50px 50px;
+      animation:moveBackground 20s linear infinite;
+      z-index:-1;
+    }
+
+    @keyframes moveBackground{
+      0%{transform:translate(0,0);}
+      100%{transform:translate(50px,50px);}
+    }
+
+    .invite-card{
+      position:relative;
+      background:rgba(255,255,255,0.95);
+      backdrop-filter:blur(20px);
+      border-radius:30px;
+      box-shadow:0 25px 60px rgba(226,85,161,0.2),inset 0 1px 0 rgba(255,255,255,0.6);
+      border:1px solid rgba(255,255,255,0.8);
+      padding:40px 30px;
+      max-width:450px;
+      width:100%;
+      text-align:center;
+      z-index:1;
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+
+    .invite-card::before{
+      content:"";
+      position:absolute;
+      top:-2px;left:-2px;
+      right:-2px;bottom:-2px;
+      background:linear-gradient(135deg,#e255a1,#f093fb,#ff6b9d);
+      border-radius:30px;
+      z-index:-1;
+      opacity:0;
+      animation:glow 3s ease-in-out infinite;
+    }
+
+    .header-text{
+      font-family:'Playfair Display',serif;
+      font-size:42px;
+      font-weight:800;
+      background:linear-gradient(135deg,#e255a1,#f093fb);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      margin-bottom:10px;
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) 0.1s forwards;
+      opacity:0;
+    }
+
+    .subtext{
+      font-size:14px;
+      color:#888;
+      margin-bottom:30px;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-weight:600;
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) 0.2s forwards;
+      opacity:0;
+    }
+
+    .photo-frame{
+      width:100%;
+      height:360px;
+      border-radius:20px;
+      overflow:hidden;
+      border:8px solid rgba(224,85,161,0.15);
+      background:linear-gradient(135deg,#fce7f3,#f3e8ff);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 15px 40px rgba(226,85,161,0.15);
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) 0.3s forwards;
+      opacity:0;
+    }
+
+    .photo-frame img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      animation:zoomIn 8s ease-in-out infinite;
+    }
+
+    @keyframes zoomIn{
+      0%{transform:scale(1);}
+      50%{transform:scale(1.03);}
+      100%{transform:scale(1);}
+    }
+
+    .look-btn{
+      margin-top:30px;
+      background:linear-gradient(135deg,#e255a1,#f093fb);
+      color:#fff;
+      padding:16px 40px;
+      border-radius:50px;
+      border:none;
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+      box-shadow:0 10px 30px rgba(226,85,161,0.3);
+      transition:all 0.3s ease;
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) 0.4s forwards;
+      opacity:0;
+      letter-spacing:1px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .look-btn::before{
+      content:"";
+      position:absolute;
+      top:0;left:-100%;
+      width:100%;height:100%;
+      background:rgba(255,255,255,0.2);
+      transition:left 0.3s;
+    }
+
+    .look-btn:hover{
+      transform:translateY(-3px);
+      box-shadow:0 15px 40px rgba(226,85,161,0.4);
+    }
+
+    .look-btn:hover::before{
+      left:100%;
+    }
+
+    .invitation{
+      display:none;
+      min-height:100vh;
+      padding:40px 20px;
+      position:relative;
+      overflow:hidden;
+      animation:fadeIn 1s ease forwards;
+      z-index:1;
+      scroll-behavior:smooth;
+    }
+
+    .panel{
+      position:relative;
+      z-index:1;
+      max-width:850px;
+      margin:0 auto;
+      background:rgba(255,255,255,0.97);
+      backdrop-filter:blur(20px);
+      border-radius:30px;
+      padding:50px 40px;
+      box-shadow:0 25px 80px rgba(226,85,161,0.2),inset 0 1px 0 rgba(255,255,255,0.8);
+      border:1px solid rgba(255,255,255,0.8);
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+
+    .title{
+      text-align:center;
+      font-family:'Playfair Display',serif;
+      font-size:48px;
+      font-weight:800;
+      margin-bottom:15px;
+      background:linear-gradient(135deg,#e255a1,#f093fb);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) 0.1s forwards;
+      opacity:0;
+    }
+
+    .subtitle{
+      text-align:center;
+      color:#666;
+      margin-bottom:40px;
+      font-size:16px;
+      line-height:1.6;
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) 0.2s forwards;
+      opacity:0;
+    }
+
+    .section-title{
+      text-align:center;
+      font-size:24px;
+      font-weight:700;
+      color:#e255a1;
+      margin:30px 0 20px 0;
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) 0.3s forwards;
+      opacity:0;
+    }
+
+    .countdown{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(90px,1fr));
+      gap:15px;
+      justify-content:center;
+      margin:30px 0;
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) 0.4s forwards;
+      opacity:0;
+    }
+
+    .countdown .item{
+      background:linear-gradient(135deg,rgba(224,85,161,0.08),rgba(240,147,251,0.08));
+      border:2px solid rgba(224,85,161,0.2);
+      border-radius:16px;
+      padding:20px 15px;
+      text-align:center;
+      box-shadow:0 8px 20px rgba(226,85,161,0.1);
+      transition:all 0.3s ease;
+    }
+
+    .countdown .item:hover{
+      transform:translateY(-5px);
+      box-shadow:0 12px 30px rgba(226,85,161,0.2);
+      border-color:rgba(224,85,161,0.4);
+    }
+
+    .countdown .num{
+      font-size:32px;
+      font-weight:800;
+      background:linear-gradient(135deg,#e255a1,#f093fb);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      line-height:1;
+    }
+
+    .countdown .label{
+      font-size:12px;
+      color:#999;
+      margin-top:8px;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+
+    .info-section{
+      background:linear-gradient(135deg,rgba(224,85,161,0.05),rgba(240,147,251,0.05));
+      border-radius:16px;
+      padding:25px;
+      margin:30px 0;
+      border:1px solid rgba(224,85,161,0.1);
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) 0.5s forwards;
+      opacity:0;
+    }
+
+    .info-section p{
+      text-align:center;
+      font-size:17px;
+      color:#333;
+      line-height:1.8;
+      margin:10px 0;
+    }
+
+    .info-label{
+      color:#e255a1;
+      font-weight:700;
+    }
+
+    .button-group{
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin:20px 0;
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) 0.6s forwards;
+      opacity:0;
+    }
+
+    .map-btn,.back-btn{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:14px 28px;
+      border-radius:50px;
+      border:2px solid #e255a1;
+      background:#fff;
+      cursor:pointer;
+      font-weight:600;
+      transition:all 0.3s ease;
+      font-size:15px;
+      letter-spacing:0.5px;
+    }
+
+    .map-btn{
+      background:linear-gradient(135deg,#e255a1,#f093fb);
+      color:#fff;
+      border:none;
+      box-shadow:0 8px 20px rgba(226,85,161,0.3);
+    }
+
+    .map-btn:hover{
+      transform:translateY(-3px);
+      box-shadow:0 12px 30px rgba(226,85,161,0.4);
+    }
+
+    .back-btn{
+      color:#e255a1;
+      background:rgba(224,85,161,0.05);
+    }
+
+    .back-btn:hover{
+      background:rgba(224,85,161,0.15);
+      transform:translateY(-2px);
+    }
+
+    .rsvp{
+      background:linear-gradient(135deg,rgba(224,85,161,0.1),rgba(240,147,251,0.1));
+      border:2px solid rgba(224,85,161,0.2);
+      border-radius:20px;
+      padding:35px 25px;
+      margin-top:40px;
+      text-align:center;
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1) 0.7s forwards;
+      opacity:0;
+    }
+
+    .rsvp h3{
+      color:#e255a1;
+      margin-bottom:15px;
+      font-size:24px;
+      font-weight:700;
+    }
+
+    .rsvp button{
+      margin-top:15px;
+      background:linear-gradient(135deg,#e255a1,#f093fb);
+      color:#fff;
+      padding:16px 40px;
+      border:none;
+      border-radius:50px;
+      font-weight:700;
+      cursor:pointer;
+      font-size:16px;
+      box-shadow:0 10px 30px rgba(226,85,161,0.3);
+      transition:all 0.3s ease;
+      letter-spacing:1px;
+    }
+
+    .rsvp button:hover{
+      transform:translateY(-3px);
+      box-shadow:0 15px 40px rgba(226,85,161,0.4);
+    }
+
+    a.map-btn{
+      text-decoration:none;
+    }
+
+    @media(max-width:768px){
+      .title{font-size:36px;}
+      .header-text{font-size:32px;}
+      .panel{padding:30px 20px;}
+      .countdown{grid-template-columns:repeat(2,1fr);}
+      .photo-frame{height:280px;}
+      .section-title{font-size:20px;}
+      .map-btn,.back-btn{padding:12px 24px;font-size:14px;}
+      .rsvp{padding:25px 15px;}
+    }
+
+    @media(max-width:480px){
+      body{padding:0;}
+      .invite-card{padding:25px 20px;}
+      .header-text{font-size:28px;}
+      .title{font-size:28px;}
+      .panel{padding:20px 15px;}
+      .countdown{grid-template-columns:repeat(2,1fr);gap:10px;}
+      .countdown .item{padding:15px 10px;}
+      .countdown .num{font-size:26px;}
+      .photo-frame{height:240px;}
+      .info-section{padding:15px;}
+      .button-group{gap:8px;}
+      .map-btn,.back-btn{padding:11px 20px;font-size:13px;}
+      .rsvp button{padding:12px 30px;font-size:14px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="confetti" id="confetti"></div>
+
+  <section class="landing center" id="landing">
+    <div class="invite-card">
+      <div class="header-text">Undangan Istimewa</div>
+      <p class="subtext">untuk Anda</p>
+      <div class="photo-frame">
+        <img id="coverImg" src="ROSARI.jpeg" alt="Foto Ulang Tahun" />
+      </div>
+      <button class="look-btn" id="openInvite">Buka Undangan ✨</button>
+    </div>
+  </section>
+
+  <section class="invitation" id="invitation">
+    <div class="panel">
+      <div class="title">🎂 Pesta Ulang Tahun ke-24 🎂</div>
+      <div class="subtitle">Mari rayakan hari spesial bersama Maria Rosari Prasetraningrum dengan penuh kebahagiaan dan kehangatan 💖</div>
+
+      <div class="section-title">Hitung Mundur</div>
+      <div class="countdown" id="countdown">
+        <div class="item">
+          <div class="num" id="days">00</div>
+          <div class="label">Hari</div>
+        </div>
+        <div class="item">
+          <div class="num" id="hours">00</div>
+          <div class="label">Jam</div>
+        </div>
+        <div class="item">
+          <div class="num" id="minutes">00</div>
+          <div class="label">Menit</div>
+        </div>
+        <div class="item">
+          <div class="num" id="seconds">00</div>
+          <div class="label">Detik</div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <p><span class="info-label">📍 Lokasi Acara:</span></p>
+        <p><strong>Bekasi, Jawa Barat</strong></p>
+        <p style="font-size:15px;color:#999;margin-top:12px;">Silakan buka Google Maps untuk rute perjalanan</p>
+      </div>
+
+      <div class="button-group">
+        <a id="mapsLink" href="https://maps.app.goo.gl/6mm7eFwW7o7AoEVf8" target="_blank" rel="noopener noreferrer" class="map-btn">📍 Buka di Google Maps</a>
+        <button class="back-btn" id="backBtn">← Kembali</button>
+      </div>
+
+      <div class="rsvp">
+        <h3>✉️ Konfirmasi Kehadiran</h3>
+        <p style="color:#666;font-size:14px;margin-bottom:15px;">Silakan konfirmasi kehadiran Anda melalui WhatsApp</p>
+        <button id="kirimWA">💬 Kirim Pesan WhatsApp</button>
+      </div>
+    </div>
+  </section>
+
+  <audio id="bgMusic" loop preload="auto">
+    <source src="american-authors-best-day-of-my-life-single-version.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // === Tanggal acara: 11 Oktober 2026 jam 11:00 ===
+    const eventDate = new Date(2026, 9, 11, 11, 0, 0);
+
+    const daysEl=document.getElementById('days'),
+          hoursEl=document.getElementById('hours'),
+          minutesEl=document.getElementById('minutes'),
+          secondsEl=document.getElementById('seconds');
+
+    function updateCountdown(){
+      const now=new Date();
+      const diff=eventDate-now;
+      if(diff<=0)return;
+      const s=Math.floor(diff/1000),
+            d=Math.floor(s/86400),
+            h=Math.floor((s%86400)/3600),
+            m=Math.floor((s%3600)/60),
+            sec=s%60;
+      daysEl.textContent=String(d).padStart(2,'0');
+      hoursEl.textContent=String(h).padStart(2,'0');
+      minutesEl.textContent=String(m).padStart(2,'0');
+      secondsEl.textContent=String(sec).padStart(2,'0');
+    }
+
+    let timer;
+    const openBtn=document.getElementById('openInvite');
+    const landing=document.getElementById('landing');
+    const invitation=document.getElementById('invitation');
+    const backBtn=document.getElementById('backBtn');
+    const audio=document.getElementById('bgMusic');
+
+    function createConfetti(){
+      const container=document.getElementById('confetti');
+      for(let i=0;i<100;i++){
+        const conf=document.createElement('span');
+        conf.style.left=Math.random()*100+'%';
+        conf.style.backgroundColor = `hsl(${Math.random()*360},70%,60%)`;
+        conf.style.animationDuration=(4+Math.random()*4)+'s';
+        conf.style.width=conf.style.height=(5+Math.random()*8)+'px';
+        conf.style.animationDelay=Math.random()*0.5+'s';
+        container.appendChild(conf);
+      }
+    }
+
+    function startInvite(){
+      landing.style.display='none';
+      invitation.style.display='block';
+      window.scrollTo({top:0,behavior:'smooth'});
+      updateCountdown();
+      timer=setInterval(updateCountdown,1000);
+      createConfetti();
+      audio.play().catch(()=>console.warn('Autoplay diblokir'));
+    }
+
+    function closeInvite(){
+      clearInterval(timer);
+      audio.pause();audio.currentTime=0;
+      invitation.style.display='none';
+      landing.style.display='grid';
+      document.getElementById('confetti').innerHTML='';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    openBtn.addEventListener('click',startInvite);
+    backBtn.addEventListener('click',closeInvite);
+
+    // === WhatsApp RSVP ===
+    document.getElementById('kirimWA').addEventListener('click',()=>{
+      const whatsappNumber = "6281703023620"; // Ganti dengan nomor kamu
+      const message = "Hallo Rosa, Aku Hadir Yah 🎉";
+      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+      window.open(url,'_blank');
+    });
+  </script>
+</body></html>
+

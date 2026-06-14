@@ -1,0 +1,29 @@
+{
+  "name": "mybirthday-invitation",
+  "version": "1.0.0",
+  "description": "Elegant and interactive digital birthday invitation website",
+  "main": "index.html",
+  "scripts": {
+    "serve": "python3 -m http.server 8000",
+    "serve-windows": "python -m http.server 8000"
+  },
+  "keywords": [
+    "birthday",
+    "invitation",
+    "digital",
+    "responsive",
+    "html5",
+    "css3",
+    "javascript"
+  ],
+  "author": "GitHub Copilot",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/mybirthday.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/mybirthday/issues"
+  },
+  "homepage": "https://github.com/yourusername/mybirthday#readme"
+}
